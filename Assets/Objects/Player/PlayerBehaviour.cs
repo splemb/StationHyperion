@@ -113,7 +113,7 @@ public class PlayerBehaviour : MonoBehaviour
         //Manual Gravity
         vVelocity = rb.velocity.y;
 
-        if (CheckGrounded() && !isJumping)
+        if ((CheckGrounded()) && !isJumping)
         {
             
             Mathf.Clamp(vVelocity, 0f, Mathf.Infinity);
@@ -123,11 +123,25 @@ public class PlayerBehaviour : MonoBehaviour
                 tryJump = false;
                 isJumping = true;
                 vVelocity = jumpForce;
-                currentGravityScale = gravityScale * jumpGravityScaleModifier;
             } else
             {
                 if (moveAxis != Vector2.zero && vVelocity > 0) SetToGround();
                 vVelocity = 0;
+            }
+        }
+        else if (CheckFacingWall(0.1f))
+        {
+
+            if (tryJump)
+            {
+                ChangeState(PlayerState.Flinging);
+
+                rb.velocity = Vector3.zero;
+                rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
+            } else
+            {
+                if (vVelocity > 0) vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime;
+                else vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime * 0.5f;
             }
         }
         else
@@ -151,9 +165,27 @@ public class PlayerBehaviour : MonoBehaviour
     void FlingingPhysics()
     {
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
-        rb.AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.5f * Time.fixedDeltaTime, ForceMode.Impulse);
+        
 
-        if (CheckGrounded(1f))
+        if (CheckFacingWall(0.1f))
+        {
+
+            if (tryJump)
+            {
+                rb.velocity = Vector3.zero;
+                rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
+            }
+            else
+            {
+                rb.AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.5f * Time.fixedDeltaTime, ForceMode.Impulse);
+            }
+        }
+        else
+        {
+            rb.AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.5f * Time.fixedDeltaTime, ForceMode.Impulse);
+        }
+
+            if (CheckGrounded(0.1f))
         {
             ChangeState(PlayerState.Standard);
         }
@@ -196,6 +228,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (input.phase == InputActionPhase.Started)
         {
             if (CheckGrounded(0.5f) && !isJumping) tryJump = true;
+            else if (CheckFacingWall(0.1f) && !isJumping) { tryJump = true; rb.velocity = Vector3.zero; }
         }
         
         if (input.phase == InputActionPhase.Canceled)
@@ -319,6 +352,11 @@ public class PlayerBehaviour : MonoBehaviour
     bool CheckGrounded(float reach = 0.001f)
     {
         return (Physics.BoxCast(transform.position + (transform.up * 0.5f), new Vector3(0.25f, 0.1f, 0.25f), -transform.up, Quaternion.identity, (0.5f + reach), environmentMask));
+    }
+
+    bool CheckFacingWall(float reach= 0.001f)
+    {
+        return (Physics.BoxCast(transform.position + (transform.up * 0.5f), new Vector3(0.25f, 0.1f, 0.25f), transform.forward, Quaternion.identity, (0.1f + reach), environmentMask));
     }
 
     void SetToGround(float reach = 0.02f)
