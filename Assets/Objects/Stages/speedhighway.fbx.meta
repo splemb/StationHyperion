@@ -1,0 +1,550 @@
+fileFormatVersion: 2
+guid: ed79c9c9d0c91c74e97764eaf6c8dc1d
+ModelImporter:
+  serializedVersion: 21202
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_0
+    second: {fileID: 2100000, guid: 6dd8af265b36fd7419cc76986ef0fea5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_1
+    second: {fileID: 2100000, guid: 2210cfc8dfe7fbc498622fc78b2bcdbe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_10
+    second: {fileID: 2100000, guid: 4fc96be33c990724681a568e3d9f85a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_11
+    second: {fileID: 2100000, guid: f6b98d226d7ce0649a5f5ab0d7e53e87, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_12
+    second: {fileID: 2100000, guid: 03244af4a72b1244ea8104e1d2d7a292, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_13
+    second: {fileID: 2100000, guid: f482e56f45247394482a163023b6cf8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_14
+    second: {fileID: 2100000, guid: 6e3638d12966fb148a573a4c09cbb981, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_15
+    second: {fileID: 2100000, guid: 6e611147018b9a5489651616a5d5ae3a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_16
+    second: {fileID: 2100000, guid: 13cf0b8558b5a1c4eaf9bd31a93e7f90, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_17
+    second: {fileID: 2100000, guid: 04133831a2ce3064eb5d7e35ba2651a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_18
+    second: {fileID: 2100000, guid: b387f22752615d142b8622b1ab9ff6ec, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_19
+    second: {fileID: 2100000, guid: 7ebb47856711e5d44880e5d940949b28, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_2
+    second: {fileID: 2100000, guid: 51a2090a621f0f04990193322f768464, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_20
+    second: {fileID: 2100000, guid: 15f9d3ef38c725b42ad3b3f842433f4b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_21
+    second: {fileID: 2100000, guid: ce4921eb93af0e34782111f21b2956dd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_22
+    second: {fileID: 2100000, guid: c3b976f597ab4134d97228b3392281f1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_23
+    second: {fileID: 2100000, guid: 96f6e2e0e3939f545a457ca67269a2d4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_24
+    second: {fileID: 2100000, guid: d5390b718e5203148a93f3851b1d8d01, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_25
+    second: {fileID: 2100000, guid: 9d2ff6278a0364a45a6da92637cf47d1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_26
+    second: {fileID: 2100000, guid: e59c07a2e4acff540a636eaf5d7407f1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_27
+    second: {fileID: 2100000, guid: cd6db3f41935d454484fbf82f238fa74, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_28
+    second: {fileID: 2100000, guid: 1791ecfa937ac7e4294043a2ca8ae1ba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_29
+    second: {fileID: 2100000, guid: 650e24313fd6067479ee79bb09264a91, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_3
+    second: {fileID: 2100000, guid: e13d87564f68d1c4aab9f06c0f217442, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_30
+    second: {fileID: 2100000, guid: 5836ef85c89939b43a0a1753cd246309, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_31
+    second: {fileID: 2100000, guid: dcaf543b4843ec244a32d27fc1f292d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_32
+    second: {fileID: 2100000, guid: daff83658771b594997d424e3cf509c9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_33
+    second: {fileID: 2100000, guid: 77ad4a9e07d2fa548a434bbb26c80c31, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_34
+    second: {fileID: 2100000, guid: a257809c0000f884a9fa992b4e2a1a09, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_35
+    second: {fileID: 2100000, guid: a6e727fe96b1b5041afb59734a559bfa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_36
+    second: {fileID: 2100000, guid: ce5537996ff348349a305d51e699e7ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_37
+    second: {fileID: 2100000, guid: 63d5a8bcb74943a48bbc562762c6be22, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_38
+    second: {fileID: 2100000, guid: c45bfe560a5de814cbd53326a69efee5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_39
+    second: {fileID: 2100000, guid: 3c90e7057b820584a90e519aca1e4439, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_4
+    second: {fileID: 2100000, guid: e63ae26757e95ea4f88ebf813116a2bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_40
+    second: {fileID: 2100000, guid: 95297434b21cadb42abeca70116c7262, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_41
+    second: {fileID: 2100000, guid: 84421fe77c140f847ab2cc760ff198a3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_42
+    second: {fileID: 2100000, guid: c8e2d2fe5bfacd4439818b63ee099ddf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_43
+    second: {fileID: 2100000, guid: 10902ce0e09e4294cae683cdee85e20e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_44
+    second: {fileID: 2100000, guid: a26f6d6c5ca16c24fae17168a274de31, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_45
+    second: {fileID: 2100000, guid: 97eba2261f3a70f41bd5279b373f7a00, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_46
+    second: {fileID: 2100000, guid: 6bdc0885707966445922b0307c29668e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_47
+    second: {fileID: 2100000, guid: 81b9509557a3b6a4e91956b2ce3ca2af, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_48
+    second: {fileID: 2100000, guid: 807760bb07f5fe240abebe2755746237, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_49
+    second: {fileID: 2100000, guid: d786934a1fe5c9542872fd8e25a40777, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_5
+    second: {fileID: 2100000, guid: 045d3dfba5941a44183b55fe7d410a9f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_50
+    second: {fileID: 2100000, guid: ce590e54b3581ea43bfca24137bc68ee, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_51
+    second: {fileID: 2100000, guid: b0d526fdaf4369c449a7c7245119918e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_52
+    second: {fileID: 2100000, guid: a15ca45d7e1f8ba44ac2609f797e586a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_53
+    second: {fileID: 2100000, guid: d76ac9731ca14a444b62c66a0887b26c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_54
+    second: {fileID: 2100000, guid: 4352bc83437f2984a8107865508d01d4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_55
+    second: {fileID: 2100000, guid: 66fef05c2c069e1419af071eb405777c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_56
+    second: {fileID: 2100000, guid: 9500ecac5895cc24087b8db38c54502a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_57
+    second: {fileID: 2100000, guid: 84250bb098124374991bd54fed2710a3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_58
+    second: {fileID: 2100000, guid: 8f69323c3c47a51488dfde5a3632748e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_59
+    second: {fileID: 2100000, guid: e375da7da0fcbd2459f45be1c1fb9fbc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_6
+    second: {fileID: 2100000, guid: 55e907ad53c62564ca0e77b336b6d095, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_60
+    second: {fileID: 2100000, guid: 00f111352fadeb149afe11da81331b74, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_61
+    second: {fileID: 2100000, guid: 3404e7f3f280a9d42a657ed781e8579f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_62
+    second: {fileID: 2100000, guid: 45ca0fe8d34dc3c47ab48681f774a471, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_63
+    second: {fileID: 2100000, guid: 2e033df32d5e2b74e98080d05ba83bf9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_64
+    second: {fileID: 2100000, guid: 8eef7276b326b4c49a2fd6ef41aad6aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_65
+    second: {fileID: 2100000, guid: 4e5c926768368694a9d532d4370074b4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_66
+    second: {fileID: 2100000, guid: 329c3e2f2caa573408fa0909dbcbf427, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_67
+    second: {fileID: 2100000, guid: f2e757cee880e364b9f5a7fc37ef4256, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_68
+    second: {fileID: 2100000, guid: c5762dcd082499846bee25fefaa27477, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_69
+    second: {fileID: 2100000, guid: 06ab153f1238aee449e864f841a1bc7b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_70
+    second: {fileID: 2100000, guid: a11ca4deb3470ef4495b267c99c35818, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_71
+    second: {fileID: 2100000, guid: 632bcc88a2a14b8429fb47aabc2a69e5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_72
+    second: {fileID: 2100000, guid: 15a8b463493151346a28a59b8e4b9c5b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_73
+    second: {fileID: 2100000, guid: 0d86d4be21028ed439eec929259eaa50, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_74
+    second: {fileID: 2100000, guid: 133d0ccbcaf68fd469609a5571464000, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_75
+    second: {fileID: 2100000, guid: 6d277dcd106acea4789b5583d3818c40, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_76
+    second: {fileID: 2100000, guid: bf81d0152561b5e4783f6090fb6070e5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_77
+    second: {fileID: 2100000, guid: d3313030e2d20f641bd1db2824bb7efb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_78
+    second: {fileID: 2100000, guid: 60e85603237370b43a09785d7b4ce0ce, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_79
+    second: {fileID: 2100000, guid: eb30d290b7bac4e4a8d21545d95c15a0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_8
+    second: {fileID: 2100000, guid: 77a2c8bc7ba934245adc33341f3a9eb0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_80
+    second: {fileID: 2100000, guid: 55d5c6dc339072741ab0f9ee754c0230, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_81
+    second: {fileID: 2100000, guid: 310deb2fdd41d724ca521977c8edb349, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_82
+    second: {fileID: 2100000, guid: 70242f64cbfcac34ba2a3cca28c86da1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_83
+    second: {fileID: 2100000, guid: 18c18f942eaf21b469f2038f5c4ec195, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_84
+    second: {fileID: 2100000, guid: a2a62d145e57f0248a5047ba8ec6b3c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_85
+    second: {fileID: 2100000, guid: 75bf3a9d60bd4ca44aff889723aad37a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_86
+    second: {fileID: 2100000, guid: b5c85c4caefe926428fca5d7028c7e0c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_87
+    second: {fileID: 2100000, guid: 7719e7b2bea7fa74bb3db28c906e39f0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_88
+    second: {fileID: 2100000, guid: 61d7c89d2eff75042a0a97febbf221c2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HIGHWAY01_material_9
+    second: {fileID: 2100000, guid: bdaebea18d72ae1499da5e527591e59b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: None
+    second: {fileID: 2100000, guid: 1e1ab87d82f9c89469b384d0528ae8c1, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 4
+    meshCompression: 0
+    addColliders: 1
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 0
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.04
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
