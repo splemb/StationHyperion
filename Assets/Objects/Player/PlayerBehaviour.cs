@@ -9,6 +9,7 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Referenced Components")]
     [SerializeField] Transform cameraTransform;
     [SerializeField] Transform grapplePoint;
+    [SerializeField] Transform beamEmitPoint;
     [SerializeField] Transform swingFollow;
     [SerializeField] GameObject shot;
     [SerializeField] Transform shotOrigin;
@@ -158,21 +159,22 @@ public class PlayerBehaviour : MonoBehaviour
     {
         transform.position = swingFollow.position;
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
-        swingFollow.GetComponentInChildren<ParticleSystem>().transform.LookAt(grapplePoint);
+        //beamEmitPoint.GetComponent<ParticleSystem>().transform.LookAt(grapplePoint);
         swingFollow.GetComponent<Rigidbody>().AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.01f * Time.fixedDeltaTime, ForceMode.Impulse);
-        //swingFollow.LookAt(grapplePoint);
+        GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Lens.FieldOfView = 50 + (Mathf.Clamp(swingFollow.GetComponent<Rigidbody>().velocity.magnitude, 0f, 50f));
+        beamEmitPoint.LookAt(grapplePoint);
     }
     void FlingingPhysics()
     {
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
-        
+        GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Lens.FieldOfView = 50 + (Mathf.Clamp(rb.velocity.magnitude, 0f, 50f));
 
         if (CheckFacingWall(0.1f))
         {
 
             if (tryJump)
             {
-                rb.velocity = Vector3.zero;
+                //rb.velocity = Vector3.zero;
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
             }
             else
@@ -233,8 +235,10 @@ public class PlayerBehaviour : MonoBehaviour
         
         if (input.phase == InputActionPhase.Canceled)
         {
+            Debug.Log("Jump Cancelled");
             isJumping = false;
             tryJump = false;
+            if (rb.velocity.y > 0) rb.velocity += new Vector3(0, -rb.velocity.y);
             currentGravityScale = gravityScale;
         }
         
@@ -255,6 +259,7 @@ public class PlayerBehaviour : MonoBehaviour
                 grapplePoint.position = hit.point;
                 
                 swingFollow.gameObject.SetActive(true);
+                beamEmitPoint.gameObject.SetActive(true);
 
                 swingFollow.GetComponent<Rigidbody>().velocity = rb.velocity;
                 swingFollow.position = transform.position;
@@ -272,6 +277,7 @@ public class PlayerBehaviour : MonoBehaviour
             if (state == PlayerState.Swinging)
                 ChangeState(PlayerState.Flinging);
             swingFollow.gameObject.SetActive(false);
+            beamEmitPoint.gameObject.SetActive(false);
         }
     }
 
@@ -333,6 +339,7 @@ public class PlayerBehaviour : MonoBehaviour
                 rb.useGravity = false;
                 rb.isKinematic = false;
                 nextFootstep = Time.time;
+                GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Lens.FieldOfView = 50;
                 break;
             case PlayerState.Swinging:
                 Debug.Log("Switched to Swinging Physics");
