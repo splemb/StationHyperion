@@ -310,6 +310,26 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    public void TryDash(InputAction.CallbackContext input)
+    {
+        if (input.phase == InputActionPhase.Started)
+        {
+            switch (state)
+            {
+                case PlayerState.Standard:
+
+                    break;
+                case PlayerState.Swinging:
+                    swingFollow.GetComponent<Rigidbody>().AddForce(cameraTransform.forward * 30f, ForceMode.Impulse);
+                    break;
+                case PlayerState.Flinging:
+                    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                    rb.AddForce(cameraTransform.forward * 30f, ForceMode.Impulse);
+                    break;
+            }
+        }
+    }
+
     void ChangeState(PlayerState newState)
     {
 
