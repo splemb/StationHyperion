@@ -56017,7 +56017,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 1197198253}
   grapplePoint: {fileID: 7258571}
   beamEmitPoint: {fileID: 733128049}
-  swingFollow: {fileID: 434493254}
+  swingFollow: {fileID: 434493253}
   shot: {fileID: 2529034104335854995, guid: 88ca2c748dcf8dc439dad2de588180c8, type: 3}
   shotOrigin: {fileID: 87041253}
   shotSfx: {fileID: 1579897211}
@@ -56221,6 +56221,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: b27165c6-97e9-468d-b00a-ab6e30d2f068
     m_ActionName: Player/New action
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1579897205}
+        m_TargetAssemblyTypeName: PlayerBehaviour, Assembly-CSharp
+        m_MethodName: TrySlide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: cf750760-5ff7-4219-bea1-e707d5d2e081
+    m_ActionName: Player/Slide[/Keyboard/leftCtrl]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player

@@ -10,13 +10,14 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] Transform cameraTransform;
     [SerializeField] Transform grapplePoint;
     [SerializeField] Transform beamEmitPoint;
-    [SerializeField] Transform swingFollow;
+    [SerializeField] Rigidbody swingFollow;
     [SerializeField] GameObject shot;
     [SerializeField] Transform shotOrigin;
     [SerializeField] AudioSource shotSfx;
     Rigidbody rb;
     CapsuleCollider standCollider;
     SphereCollider crouchCollider;
+    Cinemachine.CinemachineVirtualCamera vCam;
 
     //Input Variables
     Vector2 moveAxis;
@@ -31,7 +32,7 @@ public class PlayerBehaviour : MonoBehaviour
     float currentGravityScale;
 
     //Player State
-    enum PlayerState { Standard, Swinging, Flinging }
+    enum PlayerState { Standard, Swinging, Flinging, Sliding, Crouching }
     [SerializeField] PlayerState state;
 
     //Player Parameters
@@ -70,6 +71,7 @@ public class PlayerBehaviour : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         standCollider = GetComponent<CapsuleCollider>();
         crouchCollider = GetComponent<SphereCollider>();
+        vCam = GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>();
 
         //Init Variables
         currentGravityScale = gravityScale;
@@ -84,17 +86,29 @@ public class PlayerBehaviour : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        float fov = vCam.m_Lens.FieldOfView;
+
         switch (state)
         {
             case PlayerState.Standard:
                 StandardPhysics();
                 if (footsteps.Length > 0) WalkSFX();
+                fov = Mathf.Lerp(fov, 50, Time.deltaTime * 30f);
+                vCam.m_Lens.FieldOfView = fov;
                 break;
             case PlayerState.Swinging:
                 SwingingPhysics();
+                fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(swingFollow.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
+                vCam.m_Lens.FieldOfView = fov;
                 break;
             case PlayerState.Flinging:
                 FlingingPhysics();
+                fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(swingFollow.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
+                vCam.m_Lens.FieldOfView = fov;
+                break;
+            case PlayerState.Sliding:
+                SlidingPhysics();
                 break;
         }
         
@@ -160,21 +174,18 @@ public class PlayerBehaviour : MonoBehaviour
         transform.position = swingFollow.position;
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
         //beamEmitPoint.GetComponent<ParticleSystem>().transform.LookAt(grapplePoint);
-        swingFollow.GetComponent<Rigidbody>().AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.01f * Time.fixedDeltaTime, ForceMode.Impulse);
-        GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Lens.FieldOfView = 50 + (Mathf.Clamp(swingFollow.GetComponent<Rigidbody>().velocity.magnitude, 0f, 50f));
+        swingFollow.AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.01f * Time.fixedDeltaTime, ForceMode.Impulse);
         beamEmitPoint.LookAt(grapplePoint);
     }
     void FlingingPhysics()
     {
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
-        GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Lens.FieldOfView = 50 + (Mathf.Clamp(rb.velocity.magnitude, 0f, 50f));
 
         if (CheckFacingWall(0.1f))
         {
 
             if (tryJump)
             {
-                //rb.velocity = Vector3.zero;
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
             }
             else
@@ -191,6 +202,21 @@ public class PlayerBehaviour : MonoBehaviour
         {
             ChangeState(PlayerState.Standard);
         }
+    }
+
+    void SlidingPhysics()
+    {
+        hVelocity = Vector2.ClampMagnitude(new Vector2(0, speed), speed) * 3f * Time.fixedDeltaTime;
+
+        vVelocity = rb.velocity.y;
+
+        if (CheckGrounded()) SetToGround();
+        else if (CheckFacingWall(0.1f)) ChangeState(PlayerState.Standard);
+        else vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime;
+
+        //Apply velocity to rb
+        transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
+        rb.velocity = transform.TransformDirection(new Vector3(hVelocity.x, vVelocity, hVelocity.y));
     }
 
     void Look()
@@ -261,7 +287,7 @@ public class PlayerBehaviour : MonoBehaviour
                 swingFollow.gameObject.SetActive(true);
                 beamEmitPoint.gameObject.SetActive(true);
 
-                swingFollow.GetComponent<Rigidbody>().velocity = rb.velocity;
+                swingFollow.velocity = rb.velocity;
                 swingFollow.position = transform.position;
                 float distance = Vector3.Distance(swingFollow.position, grapplePoint.position);
                 swingFollow.GetComponent<SpringJoint>().maxDistance = distance * 0.7f;
@@ -303,7 +329,7 @@ public class PlayerBehaviour : MonoBehaviour
             GameObject newShot = Instantiate(shot, shotOrigin.position, rotation);
             
             if (state == PlayerState.Swinging)
-                newShot.GetComponent<Shot>().speed += swingFollow.GetComponent<Rigidbody>().velocity.magnitude * Vector3.Dot(point - shotOrigin.position, rb.velocity);
+                newShot.GetComponent<Shot>().speed += swingFollow.velocity.magnitude * Vector3.Dot(point - shotOrigin.position, rb.velocity);
             else
                 newShot.GetComponent<Shot>().speed += rb.velocity.magnitude * Vector3.Dot(point - shotOrigin.position, rb.velocity) * Time.deltaTime;
             
@@ -317,16 +343,50 @@ public class PlayerBehaviour : MonoBehaviour
             switch (state)
             {
                 case PlayerState.Standard:
-
+                    if (!CheckGrounded())
+                    {
+                        ChangeState(PlayerState.Flinging);
+                        rb.velocity = Vector3.zero;
+                        rb.AddForce(transform.forward * 100f, ForceMode.Impulse);
+                    }
                     break;
                 case PlayerState.Swinging:
-                    swingFollow.GetComponent<Rigidbody>().AddForce(cameraTransform.forward * 30f, ForceMode.Impulse);
+                    swingFollow.velocity = Vector3.zero;
+                    swingFollow.AddForce(cameraTransform.forward * 50f, ForceMode.Impulse);
                     break;
                 case PlayerState.Flinging:
-                    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                    rb.AddForce(cameraTransform.forward * 30f, ForceMode.Impulse);
+                    //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                    rb.velocity = Vector3.zero;
+                    rb.AddForce(transform.forward * 100f, ForceMode.Impulse);
                     break;
             }
+        }
+    }
+
+    public void TrySlide(InputAction.CallbackContext input)
+    {
+        if (input.phase == InputActionPhase.Started)
+        {
+            switch (state)
+            {
+                case PlayerState.Standard:
+                    if (CheckGrounded()) ChangeState(PlayerState.Sliding);
+                    else
+                    {
+                        ChangeState(PlayerState.Flinging);
+                        rb.velocity = Vector3.zero;
+                        rb.AddForce(-transform.up * 300f, ForceMode.Impulse);
+                    }
+                    break;
+                case PlayerState.Flinging:
+                    rb.velocity = Vector3.zero;
+                    rb.AddForce(-transform.up * 300f, ForceMode.Impulse);
+                    break;
+            }
+        }
+        else if (input.phase == InputActionPhase.Canceled)
+        {
+            if (state == PlayerState.Sliding) ChangeState(PlayerState.Flinging);
         }
     }
 
@@ -347,6 +407,8 @@ public class PlayerBehaviour : MonoBehaviour
             case PlayerState.Flinging:
                 
                 break;
+            case PlayerState.Sliding:
+                break;
         }
 
         state = newState;
@@ -359,7 +421,6 @@ public class PlayerBehaviour : MonoBehaviour
                 rb.useGravity = false;
                 rb.isKinematic = false;
                 nextFootstep = Time.time;
-                GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Lens.FieldOfView = 50;
                 break;
             case PlayerState.Swinging:
                 Debug.Log("Switched to Swinging Physics");
@@ -367,9 +428,12 @@ public class PlayerBehaviour : MonoBehaviour
                 break;
             case PlayerState.Flinging:
                 Debug.Log("Switched to Flinging Physics");
-                rb.velocity = swingFollow.GetComponent<Rigidbody>().velocity;
+                rb.velocity = swingFollow.velocity;
                 rb.useGravity = true;
                 rb.isKinematic = false;
+                break;
+            case PlayerState.Sliding:
+                Debug.Log("Switched to Sliding Physics");
                 break;
         }
 
