@@ -328,10 +328,12 @@ public class PlayerBehaviour : MonoBehaviour
 
             GameObject newShot = Instantiate(shot, shotOrigin.position, rotation);
             
+            /*
             if (state == PlayerState.Swinging)
                 newShot.GetComponent<Shot>().speed += swingFollow.velocity.magnitude * Vector3.Dot(point - shotOrigin.position, rb.velocity);
             else
                 newShot.GetComponent<Shot>().speed += rb.velocity.magnitude * Vector3.Dot(point - shotOrigin.position, rb.velocity) * Time.deltaTime;
+            */
             
         }
     }
@@ -408,6 +410,10 @@ public class PlayerBehaviour : MonoBehaviour
                 
                 break;
             case PlayerState.Sliding:
+                var transposer = vCam.GetCinemachineComponent<Cinemachine.CinemachineTransposer>();
+                transposer.m_FollowOffset = Vector3.zero;
+                crouchCollider.enabled = false;
+                standCollider.enabled = true;
                 break;
         }
 
@@ -434,6 +440,10 @@ public class PlayerBehaviour : MonoBehaviour
                 break;
             case PlayerState.Sliding:
                 Debug.Log("Switched to Sliding Physics");
+                crouchCollider.enabled = true;
+                standCollider.enabled = false;
+                var transposer = vCam.GetCinemachineComponent<Cinemachine.CinemachineTransposer>();
+                transposer.m_FollowOffset = -Vector3.up;
                 break;
         }
 

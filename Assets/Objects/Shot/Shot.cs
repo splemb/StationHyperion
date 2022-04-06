@@ -22,7 +22,7 @@ public class Shot : MonoBehaviour
     {
         transform.position += transform.forward * speed * Time.deltaTime;
         RaycastHit hit;
-        if (Physics.Raycast(transform.position - transform.forward, transform.forward, out hit, 2f, hitMask)) {
+        if (Physics.Raycast(transform.position - transform.forward, transform.forward, out hit, 5f, hitMask)) {
             Collide(hit);
         }
     }
