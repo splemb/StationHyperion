@@ -9,6 +9,7 @@ public class Shot : MonoBehaviour
     [SerializeField] GameObject collision;
 
     public float speed = 40;
+    public float damage = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -29,14 +30,11 @@ public class Shot : MonoBehaviour
 
     void Collide(RaycastHit hit)
     {
-        if (!hit.collider.isTrigger)
+        if (hit.collider.gameObject.GetComponent<ShootInteraction>())
         {
-            if (hit.collider.gameObject.GetComponent<ShootInteraction>())
-            {
-                hit.collider.gameObject.GetComponent<ShootInteraction>().Shot();
-            }
-            Instantiate(collision, transform.position, transform.rotation);
-            Destroy(gameObject);
+            hit.collider.gameObject.GetComponent<ShootInteraction>().Shot(damage);
         }
+        Instantiate(collision, transform.position, transform.rotation);
+        Destroy(gameObject);
     }
 }

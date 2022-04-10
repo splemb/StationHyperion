@@ -15431,7 +15431,6 @@ GameObject:
   - component: {fileID: 1385183014}
   - component: {fileID: 1385183013}
   - component: {fileID: 1385183015}
-  - component: {fileID: 5305196023468637735}
   - component: {fileID: 5731850306575646182}
   - component: {fileID: 1905374207350030170}
   m_Layer: 10
@@ -15588,19 +15587,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!135 &5305196023468637735
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7411267044872377823}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 2
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5731850306575646182
 MonoBehaviour:
   m_ObjectHideFlags: 0

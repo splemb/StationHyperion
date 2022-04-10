@@ -9,6 +9,8 @@ public class DoorInteraction : ShootInteraction
     [SerializeField] AudioSource audioSource;
     RoomLoader roomLoader;
     [SerializeField] AudioClip[] audioClips;
+    Transform playerTransform;
+    bool playerProximityFlag = false;
 
     bool open = false;
 
@@ -18,15 +20,36 @@ public class DoorInteraction : ShootInteraction
         roomLoader = GetComponent<RoomLoader>();
     }
 
-    public override void Shot()
+    private void FixedUpdate()
     {
-        base.Shot();
+        if (open)
+        {
+            if (!playerProximityFlag)
+            {
+                if ((transform.position - playerTransform.position).magnitude <= 2) playerProximityFlag = true;
+            }
+            else
+            {
+                if ((transform.position - playerTransform.position).magnitude > 2 && playerProximityFlag)
+                {
+                    StopAllCoroutines();
+                    Close();
+                }
+            }
+        }
+    }
+
+    public override void Shot(float damage)
+    {
+        base.Shot(damage);
 
         if (!open) Open();
     }
 
     void Open()
     {
+        playerProximityFlag = false;
+        if (playerTransform == null) playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         if (roomLoader) roomLoader.LoadRooms();
         audioSource.PlayOneShot(audioClips[0]);
         open = true;
@@ -48,15 +71,5 @@ public class DoorInteraction : ShootInteraction
     {
         yield return new WaitForSeconds(10f);
         Close();
-
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player") && open)
-        {
-            StopAllCoroutines();
-            Close();
-        }
     }
 }
