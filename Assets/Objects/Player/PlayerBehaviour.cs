@@ -18,6 +18,7 @@ public class PlayerBehaviour : MonoBehaviour
     CapsuleCollider standCollider;
     SphereCollider crouchCollider;
     Cinemachine.CinemachineVirtualCamera vCam;
+    public SaveData saveData;
 
     //Input Variables
     Vector2 moveAxis;
@@ -29,6 +30,7 @@ public class PlayerBehaviour : MonoBehaviour
     bool isSprinting;
     bool isJumping;
     bool tryJump;
+    bool stompFlag;
     float currentGravityScale;
 
     //Player State
@@ -61,9 +63,15 @@ public class PlayerBehaviour : MonoBehaviour
     //SFX
     [Header("SFX")]
     [SerializeField] AudioSource walkAudio;
+    
     [SerializeField] AudioClip[] footsteps;
     [SerializeField] float stepSize = 1f;
     float nextFootstep = 0f;
+
+    [SerializeField] AudioSource miscAudio;
+    [SerializeField] AudioClip[] sounds;
+
+    [SerializeField] AudioSource slideAudio;
 
     void Start()
     {
@@ -76,12 +84,14 @@ public class PlayerBehaviour : MonoBehaviour
         //Init Variables
         currentGravityScale = gravityScale;
         ChangeState(PlayerState.Standard);
+        LoadData();
 
         //Init Camera
         cameraTransform.parent = null;
         camX = transform.rotation.eulerAngles.y;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        
     }
 
     void FixedUpdate()
@@ -132,12 +142,13 @@ public class PlayerBehaviour : MonoBehaviour
         {
             
             Mathf.Clamp(vVelocity, 0f, Mathf.Infinity);
-
+            slideAudio.Stop();
             if (tryJump)
             {
                 tryJump = false;
                 isJumping = true;
                 vVelocity = jumpForce;
+                walkAudio.PlayOneShot(footsteps[Random.Range(0, footsteps.Length)]);
             } else
             {
                 if (moveAxis != Vector2.zero && vVelocity > 0) SetToGround();
@@ -147,20 +158,29 @@ public class PlayerBehaviour : MonoBehaviour
         else if (CheckFacingWall(0.1f))
         {
 
-            if (tryJump)
+            if (tryJump && saveData.WallJump)
             {
                 ChangeState(PlayerState.Flinging);
-
+                walkAudio.PlayOneShot(footsteps[Random.Range(0, footsteps.Length)]);
                 rb.velocity = Vector3.zero;
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
+                slideAudio.Stop();
             } else
             {
-                if (vVelocity > 0) vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime;
-                else vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime * 0.5f;
+                if (vVelocity > 0) { 
+                    vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime;
+                    slideAudio.Stop();
+                }
+                else { 
+                    vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime * 0.5f;
+                    if (!slideAudio.isPlaying) slideAudio.Play();
+                    
+                }
             }
         }
         else
         {
+            slideAudio.Stop();
             vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime;
         }
 
@@ -186,20 +206,24 @@ public class PlayerBehaviour : MonoBehaviour
 
             if (tryJump)
             {
+                slideAudio.Stop();
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
             }
             else
             {
+                if (!slideAudio.isPlaying) slideAudio.Play();
                 rb.AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.5f * Time.fixedDeltaTime, ForceMode.Impulse);
             }
         }
         else
         {
+            slideAudio.Stop();
             rb.AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.5f * Time.fixedDeltaTime, ForceMode.Impulse);
         }
 
-            if (CheckGrounded(0.1f))
+        if (CheckGrounded(0.1f))
         {
+            slideAudio.Stop();
             ChangeState(PlayerState.Standard);
         }
     }
@@ -272,6 +296,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void GrappleFire(InputAction.CallbackContext input)
     {
+        if (!saveData.GrapplingHook) return;
+
         if (input.phase == InputActionPhase.Started)
         {
             //Debug.Log("Click!");
@@ -282,6 +308,7 @@ public class PlayerBehaviour : MonoBehaviour
 
             if (hit.collider != null)
             {
+                if (hit.collider.tag == "CantGrapple") return;
                 grapplePoint.position = hit.point;
                 
                 swingFollow.gameObject.SetActive(true);
@@ -340,6 +367,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void TryDash(InputAction.CallbackContext input)
     {
+        if (!saveData.Dash) return;
+
         if (input.phase == InputActionPhase.Started)
         {
             switch (state)
@@ -350,16 +379,19 @@ public class PlayerBehaviour : MonoBehaviour
                         ChangeState(PlayerState.Flinging);
                         rb.velocity = Vector3.zero;
                         rb.AddForce(transform.forward * 100f, ForceMode.Impulse);
+                        miscAudio.PlayOneShot(sounds[0]);
                     }
                     break;
                 case PlayerState.Swinging:
                     swingFollow.velocity = Vector3.zero;
                     swingFollow.AddForce(cameraTransform.forward * 50f, ForceMode.Impulse);
+                    miscAudio.PlayOneShot(sounds[0]);
                     break;
                 case PlayerState.Flinging:
                     //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
                     rb.velocity = Vector3.zero;
                     rb.AddForce(transform.forward * 100f, ForceMode.Impulse);
+                    miscAudio.PlayOneShot(sounds[0]);
                     break;
             }
         }
@@ -372,17 +404,30 @@ public class PlayerBehaviour : MonoBehaviour
             switch (state)
             {
                 case PlayerState.Standard:
-                    if (CheckGrounded()) ChangeState(PlayerState.Sliding);
+                    if (CheckGrounded()) 
+                    { 
+                        if (saveData.Slide) ChangeState(PlayerState.Sliding); 
+                    }
                     else
                     {
-                        ChangeState(PlayerState.Flinging);
-                        rb.velocity = Vector3.zero;
-                        rb.AddForce(-transform.up * 300f, ForceMode.Impulse);
+                        if (saveData.Stomp)
+                        {
+                            stompFlag = true;
+                            ChangeState(PlayerState.Flinging);
+                            rb.velocity = Vector3.zero;
+                            rb.AddForce(-transform.up * 300f, ForceMode.Impulse);
+                            miscAudio.PlayOneShot(sounds[1]);
+                        }
                     }
                     break;
                 case PlayerState.Flinging:
-                    rb.velocity = Vector3.zero;
-                    rb.AddForce(-transform.up * 300f, ForceMode.Impulse);
+                    if (saveData.Stomp)
+                    {
+                        stompFlag = true;
+                        rb.velocity = Vector3.zero;
+                        rb.AddForce(-transform.up * 300f, ForceMode.Impulse);
+                        miscAudio.PlayOneShot(sounds[1]);
+                    }
                     break;
             }
         }
@@ -407,6 +452,11 @@ public class PlayerBehaviour : MonoBehaviour
                 
                 break;
             case PlayerState.Flinging:
+                if (newState == PlayerState.Standard && stompFlag)
+                {
+                    stompFlag = false;
+                    miscAudio.PlayOneShot(sounds[2]);
+                }
                 
                 break;
             case PlayerState.Sliding:
@@ -414,6 +464,7 @@ public class PlayerBehaviour : MonoBehaviour
                 transposer.m_FollowOffset = Vector3.zero;
                 crouchCollider.enabled = false;
                 standCollider.enabled = true;
+                slideAudio.Stop();
                 break;
         }
 
@@ -444,6 +495,7 @@ public class PlayerBehaviour : MonoBehaviour
                 standCollider.enabled = false;
                 var transposer = vCam.GetCinemachineComponent<Cinemachine.CinemachineTransposer>();
                 transposer.m_FollowOffset = -Vector3.up;
+                slideAudio.Play();
                 break;
         }
 
@@ -466,6 +518,21 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (Physics.Raycast(transform.position + (transform.up * 0.5f), -transform.up, out hit, .5f + reach)) {
             transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
+        }
+    }
+
+    void LoadData()
+    {
+        saveData = SerializationManager.Load("file1");
+
+        SaveInteraction respawn = GameObject.Find(saveData.respawnPoint).GetComponent<SaveInteraction>();
+
+        if (respawn != null)
+        {
+            transform.position = respawn.respawnPoint.position;
+            transform.rotation = respawn.respawnPoint.rotation;
+
+            respawn.room.SetActive(true);
         }
     }
 }
