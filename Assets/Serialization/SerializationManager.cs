@@ -30,7 +30,7 @@ public class SerializationManager
 
     public static SaveData Load(string saveName)
     {
-        if (!File.Exists(Application.persistentDataPath + "/saves/" + saveName + ".sav")) return null;
+        if (!File.Exists(Application.persistentDataPath + "/saves/" + saveName + ".sav")) { return null; }
 
         BinaryFormatter formatter = GetBinaryFormatter();
 

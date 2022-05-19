@@ -8,6 +8,7 @@ TagManager:
   - Interactable
   - EnvironmentLight
   - CantGrapple
+  - SaveCube
   layers:
   - Default
   - TransparentFX

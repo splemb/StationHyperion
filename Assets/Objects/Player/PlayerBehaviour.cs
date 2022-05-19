@@ -525,6 +525,8 @@ public class PlayerBehaviour : MonoBehaviour
     {
         saveData = SerializationManager.Load("file1");
 
+        if (saveData == null) saveData = new SaveData();
+
         SaveInteraction respawn = GameObject.Find(saveData.respawnPoint).GetComponent<SaveInteraction>();
 
         if (respawn != null)

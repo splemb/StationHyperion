@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 3445520718833404677}
   m_Layer: 10
   m_Name: SaveCube
-  m_TagString: Untagged
+  m_TagString: SaveCube
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
