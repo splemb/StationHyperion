@@ -9,6 +9,7 @@ TagManager:
   - EnvironmentLight
   - CantGrapple
   - SaveCube
+  - Room
   layers:
   - Default
   - TransparentFX

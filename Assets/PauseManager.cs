@@ -3,27 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PauseManager : MonoBehaviour
+public static class PauseManager
 {
-    GameObject GAME;
+    public static bool GAME_IS_PAUSED = false;
 
-    private void Start()
+    public static void Pause()
     {
-        GAME = GameObject.Find("GAME");
-    }
-
-    public void Pause(InputAction.CallbackContext input)
-    {
-        if (input.phase == InputActionPhase.Started)
+        GAME_IS_PAUSED = !GAME_IS_PAUSED;
+        if (GAME_IS_PAUSED)
         {
-            GetComponent<PlayerInput>().SwitchCurrentActionMap("UI");
-            GAME.SetActive(false);
+            Time.timeScale = 0f;
+            AudioListener.pause = true;
         }
-    }
-
-    public void Unpause(InputAction.CallbackContext input)
-    {
-        GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
-        GAME.SetActive(true);
+        else 
+        { 
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+        }
     }
 }

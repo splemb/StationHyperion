@@ -37,4 +37,9 @@ public class Shot : MonoBehaviour
         Instantiate(collision, transform.position, transform.rotation);
         Destroy(gameObject);
     }
+
+    public void SetDamage(float dmg)
+    {
+        damage = dmg;
+    }
 }

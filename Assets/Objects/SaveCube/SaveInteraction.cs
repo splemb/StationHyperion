@@ -13,12 +13,18 @@ public class SaveInteraction : ShootInteraction
     {
         base.Shot(damage);
 
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>().saveData.respawnPoint = this.name;
+        PlayerBehaviour player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
 
-        GetComponent<Animator>().SetTrigger("Bounce");
+        player.saveData.respawnPoint = this.name;
+
+        player.health = player.maxHealth;
+
+        GetComponentInChildren<Animator>().SetTrigger("Bounce");
 
         audioSource.Play();
 
         SerializationManager.Save("file1", GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>().saveData);
+
+        GameObject.Find("MessageCanvas").GetComponent<Message>().DisplayMessage("Game Saved");
     }
 }

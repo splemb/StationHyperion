@@ -32,9 +32,10 @@ public class PlayerBehaviour : MonoBehaviour
     bool tryJump;
     bool stompFlag;
     float currentGravityScale;
+    int dashCounter = 3;
 
     //Player State
-    enum PlayerState { Standard, Swinging, Flinging, Sliding, Crouching }
+    enum PlayerState { Standard, Swinging, Flinging, Sliding, Crouching, Dead }
     [SerializeField] PlayerState state;
 
     //Player Parameters
@@ -45,8 +46,14 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] float sprintSpeedMultiplier = 1.5f;
     [SerializeField] float jumpForce = 10f;
     [SerializeField] float jumpGravityScaleModifier = 0.5f;
-    [SerializeField] LayerMask environmentMask;
+    [SerializeField] public LayerMask environmentMask;
     [SerializeField] LayerMask aimMask;
+
+    //Health
+    [Header("Player Health")]
+    public float maxHealth = 100;
+    public float health;
+    [SerializeField] float invincibilityTimer;
 
     //Camera
     [Header("Camera")]
@@ -81,52 +88,66 @@ public class PlayerBehaviour : MonoBehaviour
         crouchCollider = GetComponent<SphereCollider>();
         vCam = GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>();
 
+        Init();
+        
+    }
+
+    void Init()
+    {
         //Init Variables
         currentGravityScale = gravityScale;
         ChangeState(PlayerState.Standard);
         LoadData();
+        health = maxHealth;
 
         //Init Camera
         cameraTransform.parent = null;
         camX = transform.rotation.eulerAngles.y;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
     }
 
     void FixedUpdate()
     {
-
-        float fov = vCam.m_Lens.FieldOfView;
-
-        switch (state)
+        if (!PauseManager.GAME_IS_PAUSED)
         {
-            case PlayerState.Standard:
-                StandardPhysics();
-                if (footsteps.Length > 0) WalkSFX();
-                fov = Mathf.Lerp(fov, 50, Time.deltaTime * 30f);
-                vCam.m_Lens.FieldOfView = fov;
-                break;
-            case PlayerState.Swinging:
-                SwingingPhysics();
-                fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(swingFollow.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
-                vCam.m_Lens.FieldOfView = fov;
-                break;
-            case PlayerState.Flinging:
-                FlingingPhysics();
-                fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(swingFollow.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
-                vCam.m_Lens.FieldOfView = fov;
-                break;
-            case PlayerState.Sliding:
-                SlidingPhysics();
-                break;
+            float fov = vCam.m_Lens.FieldOfView;
+
+            switch (state)
+            {
+                case PlayerState.Standard:
+                    StandardPhysics();
+                    if (footsteps.Length > 0) WalkSFX();
+                    fov = Mathf.Lerp(fov, 50, Time.deltaTime * 30f);
+                    vCam.m_Lens.FieldOfView = fov;
+                    break;
+                case PlayerState.Swinging:
+                    SwingingPhysics();
+                    fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(swingFollow.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
+                    vCam.m_Lens.FieldOfView = fov;
+                    break;
+                case PlayerState.Flinging:
+                    FlingingPhysics();
+                    fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(swingFollow.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
+                    vCam.m_Lens.FieldOfView = fov;
+                    break;
+                case PlayerState.Sliding:
+                    SlidingPhysics();
+                    break;
+            }
+
+            if (invincibilityTimer > 0) invincibilityTimer -= Time.fixedDeltaTime;
+            else invincibilityTimer = 0;
         }
         
     }
 
     private void LateUpdate()
     {
-        Look();
+        if (!PauseManager.GAME_IS_PAUSED)
+        {
+            Look();
+        }
     }
 
     void StandardPhysics()
@@ -245,6 +266,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     void Look()
     {
+        if (state == PlayerState.Dead) return;
         camY += camDeltaY * sensitivityY * Time.deltaTime * 40;
         camX += camDeltaX * sensitivityX * Time.deltaTime * 40;
         camY = Mathf.Clamp(camY, minAngle, maxAngle);
@@ -277,6 +299,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void TryJump(InputAction.CallbackContext input)
     {
+        if (PauseManager.GAME_IS_PAUSED) return;
+        if (state == PlayerState.Dead) return;
+
         if (input.phase == InputActionPhase.Started)
         {
             if (CheckGrounded(0.5f) && !isJumping) tryJump = true;
@@ -296,6 +321,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void GrappleFire(InputAction.CallbackContext input)
     {
+        if (PauseManager.GAME_IS_PAUSED) return;
+        if (state == PlayerState.Dead) return;
+
         if (!saveData.GrapplingHook) return;
 
         if (input.phase == InputActionPhase.Started)
@@ -336,6 +364,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void ShotFire(InputAction.CallbackContext input)
     {
+        if (PauseManager.GAME_IS_PAUSED) return;
+        if (state == PlayerState.Dead) return;
+
         if (input.phase == InputActionPhase.Canceled)
         {
             shotSfx.Play();
@@ -354,51 +385,57 @@ public class PlayerBehaviour : MonoBehaviour
             Quaternion rotation = Quaternion.LookRotation(point - shotOrigin.position);
 
             GameObject newShot = Instantiate(shot, shotOrigin.position, rotation);
-            
-            /*
-            if (state == PlayerState.Swinging)
-                newShot.GetComponent<Shot>().speed += swingFollow.velocity.magnitude * Vector3.Dot(point - shotOrigin.position, rb.velocity);
-            else
-                newShot.GetComponent<Shot>().speed += rb.velocity.magnitude * Vector3.Dot(point - shotOrigin.position, rb.velocity) * Time.deltaTime;
-            */
+
+            newShot.GetComponent<Shot>().SetDamage(1f);
             
         }
     }
 
     public void TryDash(InputAction.CallbackContext input)
     {
+        if (PauseManager.GAME_IS_PAUSED) return;
+        if (state == PlayerState.Dead) return;
+
         if (!saveData.Dash) return;
 
         if (input.phase == InputActionPhase.Started)
         {
-            switch (state)
+            if (dashCounter > 0)
             {
-                case PlayerState.Standard:
-                    if (!CheckGrounded())
-                    {
-                        ChangeState(PlayerState.Flinging);
+                switch (state)
+                {
+                    case PlayerState.Standard:
+                        if (!CheckGrounded())
+                        {
+                            ChangeState(PlayerState.Flinging);
+                            rb.velocity = Vector3.zero;
+                            rb.AddForce(transform.forward * 100f, ForceMode.Impulse);
+                            miscAudio.PlayOneShot(sounds[0]);
+                        }
+                        break;
+                    case PlayerState.Swinging:
+                        swingFollow.velocity = Vector3.zero;
+                        swingFollow.AddForce(cameraTransform.forward * 50f, ForceMode.Impulse);
+                        miscAudio.PlayOneShot(sounds[0]);
+                        break;
+                    case PlayerState.Flinging:
+                        //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
                         rb.velocity = Vector3.zero;
                         rb.AddForce(transform.forward * 100f, ForceMode.Impulse);
                         miscAudio.PlayOneShot(sounds[0]);
-                    }
-                    break;
-                case PlayerState.Swinging:
-                    swingFollow.velocity = Vector3.zero;
-                    swingFollow.AddForce(cameraTransform.forward * 50f, ForceMode.Impulse);
-                    miscAudio.PlayOneShot(sounds[0]);
-                    break;
-                case PlayerState.Flinging:
-                    //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                    rb.velocity = Vector3.zero;
-                    rb.AddForce(transform.forward * 100f, ForceMode.Impulse);
-                    miscAudio.PlayOneShot(sounds[0]);
-                    break;
+                        stompFlag = false;
+                        break;
+                }
+                dashCounter--;
             }
         }
     }
 
     public void TrySlide(InputAction.CallbackContext input)
     {
+        if (PauseManager.GAME_IS_PAUSED) return;
+        if (state == PlayerState.Dead) return;
+
         if (input.phase == InputActionPhase.Started)
         {
             switch (state)
@@ -437,8 +474,23 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    public void TakeDamage(float amt)
+    {
+        if (invincibilityTimer > 0 || state == PlayerState.Dead) return;
+        health -= amt;
+        miscAudio.PlayOneShot(sounds[3]);
+        invincibilityTimer = 1f;
+        if (health <= 0) ChangeState(PlayerState.Dead);
+    }
+
+    public void Pause(InputAction.CallbackContext input)
+    {
+        PauseManager.Pause();
+    }
+
     void ChangeState(PlayerState newState)
     {
+        var transposer = vCam.GetCinemachineComponent<Cinemachine.CinemachineTransposer>();
 
         if (newState == state) return;
 
@@ -457,18 +509,24 @@ public class PlayerBehaviour : MonoBehaviour
                     stompFlag = false;
                     miscAudio.PlayOneShot(sounds[2]);
                 }
-                
+                dashCounter = 3;
+
                 break;
             case PlayerState.Sliding:
-                var transposer = vCam.GetCinemachineComponent<Cinemachine.CinemachineTransposer>();
                 transposer.m_FollowOffset = Vector3.zero;
                 crouchCollider.enabled = false;
                 standCollider.enabled = true;
                 slideAudio.Stop();
                 break;
+            case PlayerState.Dead:
+                crouchCollider.enabled = false;
+                standCollider.enabled = true;
+                transposer.m_FollowOffset = Vector3.zero;
+                break;
         }
 
         state = newState;
+        
 
         //Entering State
         switch (state)
@@ -493,13 +551,22 @@ public class PlayerBehaviour : MonoBehaviour
                 Debug.Log("Switched to Sliding Physics");
                 crouchCollider.enabled = true;
                 standCollider.enabled = false;
-                var transposer = vCam.GetCinemachineComponent<Cinemachine.CinemachineTransposer>();
                 transposer.m_FollowOffset = -Vector3.up;
                 slideAudio.Play();
                 break;
-        }
-
-        
+            case PlayerState.Dead:
+                transposer.m_FollowOffset = -Vector3.up;
+                crouchCollider.enabled = true;
+                standCollider.enabled = false;
+                rb.useGravity = true;
+                rb.isKinematic = false;
+                swingFollow.gameObject.SetActive(false);
+                beamEmitPoint.gameObject.SetActive(false);
+                stompFlag = true;
+                slideAudio.Stop();
+                StartCoroutine(Death());
+                break;
+        } 
     }
 
     bool CheckGrounded(float reach = 0.001f)
@@ -512,7 +579,7 @@ public class PlayerBehaviour : MonoBehaviour
         return (Physics.BoxCast(transform.position + (transform.up * 0.5f), new Vector3(0.25f, 0.1f, 0.25f), transform.forward, Quaternion.identity, (0.1f + reach), environmentMask));
     }
 
-    void SetToGround(float reach = 0.02f)
+    void SetToGround(float reach = 0.05f)
     {
         RaycastHit hit;
 
@@ -535,6 +602,15 @@ public class PlayerBehaviour : MonoBehaviour
             transform.rotation = respawn.respawnPoint.rotation;
 
             respawn.room.SetActive(true);
+            
         }
+    }
+
+    IEnumerator Death()
+    {
+        GameObject.Find("FadeCanvas").GetComponent<Animator>().SetTrigger("FadeOut");
+        yield return new WaitForSecondsRealtime(1f);
+        Init();
+        GameObject.Find("FadeCanvas").GetComponent<Animator>().SetTrigger("FadeIn");
     }
 }
