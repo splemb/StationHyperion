@@ -10,6 +10,8 @@ public class HUDManager : MonoBehaviour
     [SerializeField] Slider HPSlider;
     [SerializeField] Image crosshair;
     [SerializeField] Image crosshair_up;
+    [SerializeField] TMPro.TextMeshProUGUI powerDisplay;
+    [SerializeField] GameObject pauseCanvas;
 
     private void Start()
     {
@@ -17,9 +19,11 @@ public class HUDManager : MonoBehaviour
         HPSlider.maxValue = playerBehaviour.maxHealth;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        HPSlider.value = playerBehaviour.health;
+        HPSlider.value = Mathf.Lerp(HPSlider.value, playerBehaviour.health, Time.deltaTime * 10f);
+
+        pauseCanvas.SetActive(PauseManager.GAME_IS_PAUSED);
 
         RaycastHit hit;
         Transform cameraTransform = Camera.main.transform;
@@ -27,6 +31,8 @@ public class HUDManager : MonoBehaviour
 
         crosshair.enabled = false;
         crosshair_up.enabled = false;
+
+        powerDisplay.text = playerBehaviour.atkPower.ToString("F2");
 
         if (playerBehaviour.saveData.GrapplingHook)
         {

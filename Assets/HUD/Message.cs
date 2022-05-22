@@ -14,8 +14,8 @@ public class Message : MonoBehaviour
 
     public void DisplayMessage(string msg="")
     {
-        Debug.Log(msg);
-        textMesh.text = msg;
+        //Debug.Log(msg);
+        textMesh.text = msg.ToUpper();
         animator.SetTrigger("ShowMessage");
     }
 }

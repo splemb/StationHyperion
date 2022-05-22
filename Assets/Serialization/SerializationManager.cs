@@ -21,7 +21,7 @@ public class SerializationManager
 
         formatter.Serialize(file, saveData);
 
-        Debug.Log("You Saved");
+        //Debug.Log("You Saved");
 
         file.Close();
 
@@ -45,10 +45,17 @@ public class SerializationManager
 
         catch
         {
-            Debug.Log("Failed to Load File");
+            //Debug.Log("Failed to Load File");
             file.Close();
             return null;
         }
+    }
+
+    public static void Erase(string saveName)
+    {
+        if (!File.Exists(Application.persistentDataPath + "/saves/" + saveName + ".sav")) { return; }
+
+        File.Delete(Application.persistentDataPath + "/saves/" + saveName + ".sav");
     }
 
     public static BinaryFormatter GetBinaryFormatter()

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2529034104058496701}
   - component: {fileID: 7844330971982610426}
   - component: {fileID: 3372134874423286436}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 2529034104107471497}
   - component: {fileID: 2529034104107471607}
   - component: {fileID: 2529034104107471606}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 2529034104335854992}
   - component: {fileID: 2529034104335855006}
   - component: {fileID: 2529034104335854993}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Shot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,6 +252,7 @@ MonoBehaviour:
   collision: {fileID: 5646256721420210959, guid: 7ecc3d59175774a408eae083417f9364,
     type: 3}
   speed: 120
+  damage: 1
 --- !u!54 &2529034104335854993
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -278,7 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1327914429510574602}
   - component: {fileID: 896099228736508995}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -25,6 +25,6 @@ public class SaveInteraction : ShootInteraction
 
         SerializationManager.Save("file1", GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>().saveData);
 
-        GameObject.Find("MessageCanvas").GetComponent<Message>().DisplayMessage("Game Saved");
+        GameObject.Find("MessageCanvas").GetComponent<Message>().DisplayMessage("GAME SAVED");
     }
 }

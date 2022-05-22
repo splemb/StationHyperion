@@ -48,6 +48,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 3
   maxHealth: 3
+  m_Renderer: {fileID: 363944546908123769}
+  hitParticle: {fileID: 0}
+  deathParticle: {fileID: 0}
 --- !u!65 &363944546706605355
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -37,6 +37,7 @@ public class PlayerBehaviour : MonoBehaviour
     //Player State
     enum PlayerState { Standard, Swinging, Flinging, Sliding, Crouching, Dead }
     [SerializeField] PlayerState state;
+    public float atkPower = 1.0f;
 
     //Player Parameters
     [Header("Player Parameters")]
@@ -46,8 +47,10 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] float sprintSpeedMultiplier = 1.5f;
     [SerializeField] float jumpForce = 10f;
     [SerializeField] float jumpGravityScaleModifier = 0.5f;
+    [SerializeField] float atkPowerIncrease = 0.05f;
     [SerializeField] public LayerMask environmentMask;
     [SerializeField] LayerMask aimMask;
+    [SerializeField] bool forceNewSave = false;
 
     //Health
     [Header("Player Health")]
@@ -88,11 +91,13 @@ public class PlayerBehaviour : MonoBehaviour
         crouchCollider = GetComponent<SphereCollider>();
         vCam = GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>();
 
+        if (forceNewSave) SerializationManager.Erase("file1");
+
         Init();
         
     }
 
-    void Init()
+    public void Init()
     {
         //Init Variables
         currentGravityScale = gravityScale;
@@ -161,7 +166,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         if ((CheckGrounded()) && !isJumping)
         {
-            
+            atkPower = 1f;
             Mathf.Clamp(vVelocity, 0f, Mathf.Infinity);
             slideAudio.Stop();
             if (tryJump)
@@ -176,16 +181,17 @@ public class PlayerBehaviour : MonoBehaviour
                 vVelocity = 0;
             }
         }
-        else if (CheckFacingWall(0.1f))
+        else if (CheckFacingWall(0.1f) && saveData.WallJump)
         {
 
-            if (tryJump && saveData.WallJump)
+            if (tryJump)
             {
                 ChangeState(PlayerState.Flinging);
                 walkAudio.PlayOneShot(footsteps[Random.Range(0, footsteps.Length)]);
                 rb.velocity = Vector3.zero;
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
                 slideAudio.Stop();
+                atkPower *= 0.5f;
             } else
             {
                 if (vVelocity > 0) { 
@@ -202,6 +208,7 @@ public class PlayerBehaviour : MonoBehaviour
         else
         {
             slideAudio.Stop();
+            atkPower += rb.velocity.magnitude * Time.deltaTime * atkPowerIncrease / atkPower;
             vVelocity += currentGravityScale * Physics.gravity.y * Time.deltaTime;
         }
 
@@ -222,11 +229,12 @@ public class PlayerBehaviour : MonoBehaviour
     {
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
 
-        if (CheckFacingWall(0.1f))
+        if (CheckFacingWall(0.1f) && saveData.WallJump)
         {
 
             if (tryJump)
             {
+                atkPower *= 0.5f;
                 slideAudio.Stop();
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
             }
@@ -247,6 +255,8 @@ public class PlayerBehaviour : MonoBehaviour
             slideAudio.Stop();
             ChangeState(PlayerState.Standard);
         }
+
+        atkPower += rb.velocity.magnitude * Time.deltaTime * atkPowerIncrease / atkPower;
     }
 
     void SlidingPhysics()
@@ -306,11 +316,16 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (CheckGrounded(0.5f) && !isJumping) tryJump = true;
             else if (CheckFacingWall(0.1f) && !isJumping) { tryJump = true; rb.velocity = Vector3.zero; }
+
+            if (state == PlayerState.Swinging)
+            {
+                swingFollow.GetComponent<SpringJoint>().maxDistance = 0.5f;
+            }
         }
         
         if (input.phase == InputActionPhase.Canceled)
         {
-            Debug.Log("Jump Cancelled");
+            //Debug.Log("Jump Cancelled");
             isJumping = false;
             tryJump = false;
             if (rb.velocity.y > 0) rb.velocity += new Vector3(0, -rb.velocity.y);
@@ -328,7 +343,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (input.phase == InputActionPhase.Started)
         {
-            //Debug.Log("Click!");
+            ////Debug.Log("Click!");
             RaycastHit hit;
 
             if (!Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 20f, environmentMask))
@@ -354,7 +369,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         else if (input.phase == InputActionPhase.Canceled)
         {
-            //Debug.Log("Unclick!");
+            ////Debug.Log("Unclick!");
             if (state == PlayerState.Swinging)
                 ChangeState(PlayerState.Flinging);
             swingFollow.gameObject.SetActive(false);
@@ -367,7 +382,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (PauseManager.GAME_IS_PAUSED) return;
         if (state == PlayerState.Dead) return;
 
-        if (input.phase == InputActionPhase.Canceled)
+        if (input.phase == InputActionPhase.Started)
         {
             shotSfx.Play();
             RaycastHit hit;
@@ -386,7 +401,7 @@ public class PlayerBehaviour : MonoBehaviour
 
             GameObject newShot = Instantiate(shot, shotOrigin.position, rotation);
 
-            newShot.GetComponent<Shot>().SetDamage(1f);
+            newShot.GetComponent<Shot>().SetDamage(atkPower);
             
         }
     }
@@ -477,15 +492,22 @@ public class PlayerBehaviour : MonoBehaviour
     public void TakeDamage(float amt)
     {
         if (invincibilityTimer > 0 || state == PlayerState.Dead) return;
+        atkPower = 1f;
         health -= amt;
         miscAudio.PlayOneShot(sounds[3]);
         invincibilityTimer = 1f;
+        stompFlag = false;
         if (health <= 0) ChangeState(PlayerState.Dead);
     }
 
     public void Pause(InputAction.CallbackContext input)
     {
-        PauseManager.Pause();
+        if (input.phase == InputActionPhase.Started)
+        {
+            PauseManager.Pause();
+            if (PauseManager.GAME_IS_PAUSED) GameObject.Find("MANAGER").GetComponent<PlayerInput>().SwitchCurrentActionMap("UI");
+            else GameObject.Find("MANAGER").GetComponent<PlayerInput>().SwitchCurrentActionMap("Player");
+        }
     }
 
     void ChangeState(PlayerState newState)
@@ -532,23 +554,23 @@ public class PlayerBehaviour : MonoBehaviour
         switch (state)
         {
             case PlayerState.Standard:
-                Debug.Log("Switched to Standard Physics");
+                //Debug.Log("Switched to Standard Physics");
                 rb.useGravity = false;
                 rb.isKinematic = false;
                 nextFootstep = Time.time;
                 break;
             case PlayerState.Swinging:
-                Debug.Log("Switched to Swinging Physics");
+                //Debug.Log("Switched to Swinging Physics");
                 rb.isKinematic = true;
                 break;
             case PlayerState.Flinging:
-                Debug.Log("Switched to Flinging Physics");
+                //Debug.Log("Switched to Flinging Physics");
                 rb.velocity = swingFollow.velocity;
                 rb.useGravity = true;
                 rb.isKinematic = false;
                 break;
             case PlayerState.Sliding:
-                Debug.Log("Switched to Sliding Physics");
+                //Debug.Log("Switched to Sliding Physics");
                 crouchCollider.enabled = true;
                 standCollider.enabled = false;
                 transposer.m_FollowOffset = -Vector3.up;
@@ -562,7 +584,7 @@ public class PlayerBehaviour : MonoBehaviour
                 rb.isKinematic = false;
                 swingFollow.gameObject.SetActive(false);
                 beamEmitPoint.gameObject.SetActive(false);
-                stompFlag = true;
+                stompFlag = false;
                 slideAudio.Stop();
                 StartCoroutine(Death());
                 break;
@@ -592,18 +614,25 @@ public class PlayerBehaviour : MonoBehaviour
     {
         saveData = SerializationManager.Load("file1");
 
-        if (saveData == null) saveData = new SaveData();
+        if (saveData == null) 
+        {
+            saveData = new SaveData();
+            saveData.respawnPoint = "NEWGAME";
+        }
 
         SaveInteraction respawn = GameObject.Find(saveData.respawnPoint).GetComponent<SaveInteraction>();
+
+        GameObject[] rooms = GameObject.FindGameObjectsWithTag("Room");
+        foreach (GameObject ro in rooms) { ro.SetActive(false); }
 
         if (respawn != null)
         {
             transform.position = respawn.respawnPoint.position;
             transform.rotation = respawn.respawnPoint.rotation;
-
             respawn.room.SetActive(true);
-            
         }
+
+
     }
 
     IEnumerator Death()

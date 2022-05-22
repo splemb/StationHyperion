@@ -23,7 +23,7 @@ public class Lighting : MonoBehaviour
 
     void SetUnlit(bool setUnlit)
     {
-        Debug.Log("Unlit: " + setUnlit);
+        //Debug.Log("Unlit: " + setUnlit);
 
         if (setUnlit != unlit)
         {
