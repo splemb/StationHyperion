@@ -102,10 +102,10 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EdgeBlend: 0.68
-    - _EffectRadius: 0.6
+    - _EdgeBlend: 0.218
+    - _EffectRadius: 1.25
     - _EnvironmentReflections: 1
-    - _Frequency: 1.48
+    - _Frequency: 0.56
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -116,7 +116,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RippleDensity: 100
+    - _RippleDensity: 30.5
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

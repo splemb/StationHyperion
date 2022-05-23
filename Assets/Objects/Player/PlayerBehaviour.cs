@@ -14,6 +14,7 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] GameObject shot;
     [SerializeField] Transform shotOrigin;
     [SerializeField] AudioSource shotSfx;
+    [SerializeField] AudioSource windAmbient;
     Rigidbody rb;
     CapsuleCollider standCollider;
     SphereCollider crouchCollider;
@@ -33,6 +34,7 @@ public class PlayerBehaviour : MonoBehaviour
     bool stompFlag;
     float currentGravityScale;
     int dashCounter = 3;
+    bool wantToUnslide = false;
 
     //Player State
     enum PlayerState { Standard, Swinging, Flinging, Sliding, Crouching, Dead }
@@ -133,13 +135,15 @@ public class PlayerBehaviour : MonoBehaviour
                     break;
                 case PlayerState.Flinging:
                     FlingingPhysics();
-                    fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(swingFollow.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
+                    fov = Mathf.Lerp(fov, 50 + Mathf.Clamp(rb.velocity.magnitude, 0f, 50f), Time.deltaTime * 30f);
                     vCam.m_Lens.FieldOfView = fov;
                     break;
                 case PlayerState.Sliding:
                     SlidingPhysics();
                     break;
             }
+
+            windAmbient.volume = Mathf.Clamp((Mathf.Max(rb.velocity.magnitude, swingFollow.velocity.magnitude) / 50f) - 0.7f, 0, 1);
 
             if (invincibilityTimer > 0) invincibilityTimer -= Time.fixedDeltaTime;
             else invincibilityTimer = 0;
@@ -272,6 +276,21 @@ public class PlayerBehaviour : MonoBehaviour
         //Apply velocity to rb
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
         rb.velocity = transform.TransformDirection(new Vector3(hVelocity.x, vVelocity, hVelocity.y));
+
+        if (wantToUnslide)
+        {
+            RaycastHit hit;
+
+            Physics.Raycast(transform.position, Vector3.up, out hit, 2f, environmentMask);
+
+            if (hit.collider == null)
+            {
+                if (CheckGrounded()) ChangeState(PlayerState.Standard);
+                else ChangeState(PlayerState.Flinging);
+            }
+
+            
+        }
     }
 
     void Look()
@@ -384,17 +403,21 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (input.phase == InputActionPhase.Started)
         {
+            shotSfx.pitch = 1 + Random.Range(-0.3f, 0.3f);
             shotSfx.Play();
             RaycastHit hit;
             Vector3 point;
 
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 30f, aimMask))
+            Vector3 cameraPos = cameraTransform.position;
+            if (state == PlayerState.Sliding) cameraPos += -Vector3.up * 1.2f;
+
+            if (Physics.Raycast(cameraPos, cameraTransform.forward, out hit, 30f, aimMask))
             {
                 point = hit.point;
 
             } else
             {
-                point = cameraTransform.position + cameraTransform.forward * 30f;
+                point = cameraPos + cameraTransform.forward * 30f;
             }
 
             Quaternion rotation = Quaternion.LookRotation(point - shotOrigin.position);
@@ -485,7 +508,10 @@ public class PlayerBehaviour : MonoBehaviour
         }
         else if (input.phase == InputActionPhase.Canceled)
         {
-            if (state == PlayerState.Sliding) ChangeState(PlayerState.Flinging);
+            if (state == PlayerState.Sliding)
+            {
+                wantToUnslide = true;
+            }
         }
     }
 
@@ -523,7 +549,8 @@ public class PlayerBehaviour : MonoBehaviour
                 
                 break;
             case PlayerState.Swinging:
-                
+                rb.velocity = swingFollow.velocity;
+                swingFollow.velocity = Vector3.zero;
                 break;
             case PlayerState.Flinging:
                 if (newState == PlayerState.Standard && stompFlag)
@@ -538,6 +565,7 @@ public class PlayerBehaviour : MonoBehaviour
                 transposer.m_FollowOffset = Vector3.zero;
                 crouchCollider.enabled = false;
                 standCollider.enabled = true;
+                wantToUnslide = false;
                 slideAudio.Stop();
                 break;
             case PlayerState.Dead:
@@ -558,6 +586,7 @@ public class PlayerBehaviour : MonoBehaviour
                 rb.useGravity = false;
                 rb.isKinematic = false;
                 nextFootstep = Time.time;
+                dashCounter = 3;
                 break;
             case PlayerState.Swinging:
                 //Debug.Log("Switched to Swinging Physics");
@@ -565,19 +594,19 @@ public class PlayerBehaviour : MonoBehaviour
                 break;
             case PlayerState.Flinging:
                 //Debug.Log("Switched to Flinging Physics");
-                rb.velocity = swingFollow.velocity;
                 rb.useGravity = true;
                 rb.isKinematic = false;
+
                 break;
             case PlayerState.Sliding:
                 //Debug.Log("Switched to Sliding Physics");
                 crouchCollider.enabled = true;
                 standCollider.enabled = false;
-                transposer.m_FollowOffset = -Vector3.up;
+                transposer.m_FollowOffset = -Vector3.up * 1.2f;
                 slideAudio.Play();
                 break;
             case PlayerState.Dead:
-                transposer.m_FollowOffset = -Vector3.up;
+                transposer.m_FollowOffset = -Vector3.up * 1.8f;
                 crouchCollider.enabled = true;
                 standCollider.enabled = false;
                 rb.useGravity = true;
@@ -612,7 +641,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     void LoadData()
     {
-        saveData = SerializationManager.Load("file1");
+        saveData = SerializationManager.Load(FileNameTracker.FileName);
 
         if (saveData == null) 
         {

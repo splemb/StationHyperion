@@ -62,6 +62,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2543103036847124859, guid: 582b6b6c3e3d78f4dad17b6e4b709b60,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 50fb2b6148c833c4885c3962e3d3839c, type: 2}
     - target: {fileID: 4303604274668804099, guid: 582b6b6c3e3d78f4dad17b6e4b709b60,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.a

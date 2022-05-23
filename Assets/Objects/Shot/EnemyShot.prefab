@@ -265,7 +265,7 @@ MonoBehaviour:
   hitMask:
     serializedVersion: 2
     m_Bits: 192
-  collision: {fileID: 5646256721420210959, guid: 7ecc3d59175774a408eae083417f9364,
+  collision: {fileID: 5646256721420210959, guid: d6988cda0029ef447a24bbc885d90939,
     type: 3}
   speed: 40
   damage: 5

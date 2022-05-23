@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Title.unity
     guid: efa9274afa2bd5048aac8e0a4dc14e3f
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Main.unity
+    guid: dc25b3a0f41107d4aba46bbf42a01b9a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d2e577969a7ed274885f1cd3fb67c811,
       type: 2}

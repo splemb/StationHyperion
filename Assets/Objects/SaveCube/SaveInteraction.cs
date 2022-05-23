@@ -23,7 +23,7 @@ public class SaveInteraction : ShootInteraction
 
         audioSource.Play();
 
-        SerializationManager.Save("file1", GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>().saveData);
+        SerializationManager.Save(FileNameTracker.FileName, GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>().saveData);
 
         GameObject.Find("MessageCanvas").GetComponent<Message>().DisplayMessage("GAME SAVED");
     }
