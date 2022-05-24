@@ -69,7 +69,7 @@ public class DoorInteraction : ShootInteraction
 
     IEnumerator RecloseDelay()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(5f);
         Close();
     }
 }

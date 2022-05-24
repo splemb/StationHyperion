@@ -25,7 +25,7 @@ public class FloatToTarget : MonoBehaviour
             rb.AddForce((target.position - transform.position) * Time.deltaTime * 10f);
         else
         {
-            switch (Random.Range(0, 4)) {
+            switch (Random.Range(0, 5)) {
                 case 0:
                     rb.AddForce(Vector3.right * Time.deltaTime * 10f);
                     break;

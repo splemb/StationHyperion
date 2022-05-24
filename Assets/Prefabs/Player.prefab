@@ -130,8 +130,8 @@ MonoBehaviour:
   maxHealth: 100
   health: 0
   invincibilityTimer: 0
-  minAngle: -80
-  maxAngle: 80
+  minAngle: -89
+  maxAngle: 89
   sensitivityY: 1
   sensitivityX: 1
   walkAudio: {fileID: 6970803922904624169}

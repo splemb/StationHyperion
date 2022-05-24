@@ -23,7 +23,7 @@ public class Shot : MonoBehaviour
     {
         transform.position += transform.forward * speed * Time.deltaTime;
         RaycastHit hit;
-        if (Physics.Raycast(transform.position - transform.forward, transform.forward, out hit, 3f, hitMask)) {
+        if (Physics.Raycast(transform.position - transform.forward, transform.forward, out hit, 1f, hitMask)) {
             Collide(hit);
         }
     }
@@ -35,6 +35,8 @@ public class Shot : MonoBehaviour
             hit.collider.gameObject.GetComponent<ShootInteraction>().Shot(damage);
         }
         transform.position = hit.point;
+
+        transform.LookAt(hit.point + hit.normal);
 
         Instantiate(collision, transform.position, transform.rotation);
         Destroy(gameObject);
