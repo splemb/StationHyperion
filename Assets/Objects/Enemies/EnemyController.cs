@@ -8,6 +8,8 @@ public class EnemyController : ShootInteraction
     public float maxHealth = 10f;
 
     [SerializeField] MeshRenderer m_Renderer;
+    [SerializeField] GameObject trail;
+    [SerializeField] GameObject hurtBox;
 
     [SerializeField] ParticleSystem hitParticle;
     [SerializeField] ParticleSystem deathParticle;
@@ -30,6 +32,8 @@ public class EnemyController : ShootInteraction
         {
             deathParticle.Play();
             m_Renderer.enabled = false;
+            hurtBox.SetActive(false);
+            trail.SetActive(false);
             StartCoroutine(DisableBehaviour());
         }
     }
@@ -39,6 +43,8 @@ public class EnemyController : ShootInteraction
         health = maxHealth;
         gameObject.SetActive(true);
         m_Renderer.enabled = true;
+        hurtBox.SetActive(true);
+        trail.SetActive(true);
         transform.localPosition = initialPos;
         
     }

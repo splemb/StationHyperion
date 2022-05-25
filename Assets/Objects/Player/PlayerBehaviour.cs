@@ -196,6 +196,7 @@ public class PlayerBehaviour : MonoBehaviour
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
                 slideAudio.Stop();
                 atkPower *= 0.5f;
+                tryJump = false;
             } else
             {
                 if (vVelocity > 0) { 
@@ -311,7 +312,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (hVelocity.magnitude > 0 && CheckGrounded(0.5f) && Time.time >= nextFootstep)
         {
             walkAudio.PlayOneShot(footsteps[Random.Range(0, footsteps.Length)]);
-            nextFootstep = Time.time + stepSize / rb.velocity.magnitude;
+            nextFootstep = Time.time + stepSize;
         }
     }
 
@@ -365,8 +366,8 @@ public class PlayerBehaviour : MonoBehaviour
             ////Debug.Log("Click!");
             RaycastHit hit;
 
-            if (!Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 20f, environmentMask))
-                Physics.Raycast(cameraTransform.position, transform.forward * 0.4f + Vector3.up, out hit, 20f, environmentMask);
+            if (!Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 30f, environmentMask))
+                Physics.Raycast(cameraTransform.position, transform.forward * 0.4f + Vector3.up, out hit, 30f, environmentMask);
 
             if (hit.collider != null)
             {

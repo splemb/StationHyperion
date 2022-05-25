@@ -92,7 +92,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _Amplitude: 0.1
+    - _Amplitude: 0.2
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -105,18 +105,18 @@ Material:
     - _EdgeBlend: 0.9
     - _EffectRadius: 100
     - _EnvironmentReflections: 1
-    - _Frequency: 0.22
+    - _Frequency: 0.63
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GradientEdge: 1.13
+    - _GradientEdge: 14.47
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RippleDensity: 90.82
+    - _RippleDensity: 31.2
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

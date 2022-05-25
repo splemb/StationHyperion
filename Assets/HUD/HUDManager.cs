@@ -37,18 +37,20 @@ public class HUDManager : MonoBehaviour
         if (playerBehaviour.saveData.GrapplingHook)
         {
 
-            Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 20f, environmentMask);
+            Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 30f, environmentMask);
             if (hit.collider != null)
             {
                 if (hit.collider.tag != "CantGrapple") crosshair.enabled = true;
             }
 
-            Physics.Raycast(cameraTransform.position, playerBehaviour.transform.forward * 0.4f + Vector3.up, out hit, 20f, environmentMask);
+            Physics.Raycast(cameraTransform.position, playerBehaviour.transform.forward * 0.4f + Vector3.up, out hit, 30f, environmentMask);
             if (hit.collider != null)
             {
                 if (hit.collider.tag != "CantGrapple") { crosshair_up.enabled = true; }
             }
         }
+
+        Debug.Log(Time.time);
 
     }
 
