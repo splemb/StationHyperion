@@ -17,7 +17,7 @@ public class SaveInteraction : ShootInteraction
 
         player.saveData.respawnPoint = this.name;
 
-        player.health = player.maxHealth;
+        player.health = player.saveData.maxHealth;
 
         GetComponentInChildren<Animator>().SetTrigger("Bounce");
 

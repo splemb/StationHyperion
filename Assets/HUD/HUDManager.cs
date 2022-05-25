@@ -8,6 +8,7 @@ public class HUDManager : MonoBehaviour
     PlayerBehaviour playerBehaviour;
     [SerializeField] CanvasGroup fadeCanvas;
     [SerializeField] Slider HPSlider;
+    [SerializeField] TMPro.TextMeshProUGUI healthText;
     [SerializeField] Image crosshair;
     [SerializeField] Image crosshair_up;
     [SerializeField] TMPro.TextMeshProUGUI powerDisplay;
@@ -16,12 +17,15 @@ public class HUDManager : MonoBehaviour
     private void Start()
     {
         playerBehaviour = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
-        HPSlider.maxValue = playerBehaviour.maxHealth;
+        HPSlider.maxValue = playerBehaviour.saveData.maxHealth;
     }
 
     private void Update()
     {
+        HPSlider.maxValue = playerBehaviour.saveData.maxHealth;
         HPSlider.value = Mathf.Lerp(HPSlider.value, playerBehaviour.health, Time.deltaTime * 10f);
+
+        healthText.text = Mathf.RoundToInt(HPSlider.value).ToString();
 
         pauseCanvas.SetActive(PauseManager.GAME_IS_PAUSED);
 
@@ -50,7 +54,7 @@ public class HUDManager : MonoBehaviour
             }
         }
 
-        Debug.Log(Time.time);
+        //Debug.Log(Time.time);
 
     }
 

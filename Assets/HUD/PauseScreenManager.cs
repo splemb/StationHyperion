@@ -66,7 +66,7 @@ public class PauseScreenManager : MonoBehaviour
     IEnumerator WaitForFade()
     {
         inputLock = true;
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(3f);
         SceneManager.LoadScene(0);
         PauseManager.Pause();
     }

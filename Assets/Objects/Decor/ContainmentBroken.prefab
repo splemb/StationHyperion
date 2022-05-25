@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5046331812689353785}
   - component: {fileID: 5046331812689353784}
   - component: {fileID: 5046331812689353787}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (1)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -680,7 +680,7 @@ GameObject:
   - component: {fileID: 5046331812896355073}
   - component: {fileID: 5046331812896355072}
   - component: {fileID: 5046331812896355075}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ContainmentBroken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1132,7 +1132,7 @@ GameObject:
   - component: {fileID: 5046331813913625451}
   - component: {fileID: 5046331813913625450}
   - component: {fileID: 5046331813913625445}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1798,7 +1798,7 @@ GameObject:
   - component: {fileID: 5046331814234680993}
   - component: {fileID: 5046331814234680992}
   - component: {fileID: 5046331814234680995}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

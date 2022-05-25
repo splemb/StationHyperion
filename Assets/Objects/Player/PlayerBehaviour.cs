@@ -15,6 +15,8 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] Transform shotOrigin;
     [SerializeField] AudioSource shotSfx;
     [SerializeField] AudioSource windAmbient;
+    [SerializeField] Transform playerHead;
+    [SerializeField] Animator viewModelAnimator;
     Rigidbody rb;
     CapsuleCollider standCollider;
     SphereCollider crouchCollider;
@@ -56,7 +58,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     //Health
     [Header("Player Health")]
-    public float maxHealth = 100;
+    //public float maxHealth = 100;
     public float health;
     [SerializeField] float invincibilityTimer;
 
@@ -85,6 +87,11 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] AudioSource slideAudio;
 
+    private void Awake()
+    {
+        LoadData();
+    }
+
     void Start()
     {
         //Get Components
@@ -94,6 +101,8 @@ public class PlayerBehaviour : MonoBehaviour
         vCam = GameObject.Find("Player vCam").GetComponent<Cinemachine.CinemachineVirtualCamera>();
 
         if (forceNewSave) SerializationManager.Erase("file1");
+
+        GameObject.Find("FadeCanvas").GetComponent<Animator>().Play("FadeIn");
 
         Init();
         
@@ -105,7 +114,7 @@ public class PlayerBehaviour : MonoBehaviour
         currentGravityScale = gravityScale;
         ChangeState(PlayerState.Standard);
         LoadData();
-        health = maxHealth;
+        health = saveData.maxHealth;
 
         //Init Camera
         cameraTransform.parent = null;
@@ -147,6 +156,8 @@ public class PlayerBehaviour : MonoBehaviour
 
             if (invincibilityTimer > 0) invincibilityTimer -= Time.fixedDeltaTime;
             else invincibilityTimer = 0;
+
+            atkPower = Mathf.Clamp(atkPower, saveData.baseDamage, 10);
         }
         
     }
@@ -170,7 +181,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         if ((CheckGrounded()) && !isJumping)
         {
-            atkPower = 1f;
+            atkPower = saveData.baseDamage;
             Mathf.Clamp(vVelocity, 0f, Mathf.Infinity);
             slideAudio.Stop();
             if (tryJump)
@@ -195,7 +206,6 @@ public class PlayerBehaviour : MonoBehaviour
                 rb.velocity = Vector3.zero;
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
                 slideAudio.Stop();
-                atkPower *= 0.5f;
                 tryJump = false;
             } else
             {
@@ -220,6 +230,8 @@ public class PlayerBehaviour : MonoBehaviour
         //Apply velocity to rb
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
         rb.velocity = transform.TransformDirection(new Vector3(hVelocity.x, vVelocity, hVelocity.y));
+
+        viewModelAnimator.SetFloat("Blend", Mathf.Lerp(viewModelAnimator.GetFloat("Blend"), Mathf.Clamp(hVelocity.magnitude / 10, 0f, 1f), 0.7f));
     }
 
     void SwingingPhysics()
@@ -229,6 +241,7 @@ public class PlayerBehaviour : MonoBehaviour
         //beamEmitPoint.GetComponent<ParticleSystem>().transform.LookAt(grapplePoint);
         swingFollow.AddForce(transform.TransformDirection(new Vector3(moveAxis.x, 0f, moveAxis.y)) * speed * 0.01f * Time.fixedDeltaTime, ForceMode.Impulse);
         beamEmitPoint.LookAt(grapplePoint);
+        viewModelAnimator.SetFloat("Blend", Mathf.Lerp(viewModelAnimator.GetFloat("Blend"), Mathf.Clamp(swingFollow.velocity.magnitude / 50, 0f, 1f), 0.7f));
     }
     void FlingingPhysics()
     {
@@ -239,7 +252,6 @@ public class PlayerBehaviour : MonoBehaviour
 
             if (tryJump)
             {
-                atkPower *= 0.5f;
                 slideAudio.Stop();
                 rb.AddForce(new Vector3(-transform.forward.x * 40f, jumpForce * 3f, -transform.forward.z * 40f) * 2f, ForceMode.Impulse);
             }
@@ -262,6 +274,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
 
         atkPower += rb.velocity.magnitude * Time.deltaTime * atkPowerIncrease / atkPower;
+        viewModelAnimator.SetFloat("Blend", Mathf.Lerp(viewModelAnimator.GetFloat("Blend"), Mathf.Clamp(rb.velocity.magnitude / 30, 0f, 1f), 0.7f));
     }
 
     void SlidingPhysics()
@@ -277,6 +290,8 @@ public class PlayerBehaviour : MonoBehaviour
         //Apply velocity to rb
         transform.Rotate(new Vector3(0f, cameraTransform.rotation.eulerAngles.y - transform.rotation.eulerAngles.y, 0f));
         rb.velocity = transform.TransformDirection(new Vector3(hVelocity.x, vVelocity, hVelocity.y));
+
+        viewModelAnimator.SetFloat("Blend", Mathf.Lerp(viewModelAnimator.GetFloat("Blend"), Mathf.Clamp(hVelocity.magnitude / 30, 0f, 1f), 0.7f));
 
         if (wantToUnslide)
         {
@@ -301,7 +316,7 @@ public class PlayerBehaviour : MonoBehaviour
         camX += camDeltaX * sensitivityX * Time.deltaTime * 40;
         camY = Mathf.Clamp(camY, minAngle, maxAngle);
 
-        if (isCrouching) cameraTransform.position = new Vector3(transform.position.x, transform.position.y + (0.8f), transform.position.z);
+        if (state == PlayerState.Sliding) cameraTransform.position = new Vector3(transform.position.x, transform.position.y + (0.8f), transform.position.z);
         else cameraTransform.position = new Vector3(transform.position.x, transform.position.y + (1.8f), transform.position.z);
 
         cameraTransform.rotation = Quaternion.Euler(new Vector3(camY, camX, 0));
@@ -410,7 +425,6 @@ public class PlayerBehaviour : MonoBehaviour
             Vector3 point;
 
             Vector3 cameraPos = cameraTransform.position;
-            if (state == PlayerState.Sliding) cameraPos += -Vector3.up * 1.2f;
 
             if (Physics.Raycast(cameraPos, cameraTransform.forward, out hit, 30f, aimMask))
             {
@@ -426,6 +440,9 @@ public class PlayerBehaviour : MonoBehaviour
             GameObject newShot = Instantiate(shot, shotOrigin.position, rotation);
 
             newShot.GetComponent<Shot>().SetDamage(atkPower);
+
+            viewModelAnimator.StopPlayback();
+            viewModelAnimator.Play("Shoot");
             
         }
     }
@@ -519,7 +536,7 @@ public class PlayerBehaviour : MonoBehaviour
     public void TakeDamage(float amt)
     {
         if (invincibilityTimer > 0 || state == PlayerState.Dead) return;
-        atkPower = 1f;
+        atkPower *= 0.5f;
         health -= amt;
         miscAudio.PlayOneShot(sounds[3]);
         invincibilityTimer = 1f;
@@ -563,7 +580,7 @@ public class PlayerBehaviour : MonoBehaviour
 
                 break;
             case PlayerState.Sliding:
-                transposer.m_FollowOffset = Vector3.zero;
+                //transposer.m_FollowOffset = Vector3.zero;
                 crouchCollider.enabled = false;
                 standCollider.enabled = true;
                 wantToUnslide = false;
@@ -572,7 +589,7 @@ public class PlayerBehaviour : MonoBehaviour
             case PlayerState.Dead:
                 crouchCollider.enabled = false;
                 standCollider.enabled = true;
-                transposer.m_FollowOffset = Vector3.zero;
+                //transposer.m_FollowOffset = Vector3.zero;
                 break;
         }
 
@@ -603,11 +620,11 @@ public class PlayerBehaviour : MonoBehaviour
                 //Debug.Log("Switched to Sliding Physics");
                 crouchCollider.enabled = true;
                 standCollider.enabled = false;
-                transposer.m_FollowOffset = -Vector3.up * 1.2f;
+                //transposer.m_FollowOffset = -Vector3.up * 1.2f;
                 slideAudio.Play();
                 break;
             case PlayerState.Dead:
-                transposer.m_FollowOffset = -Vector3.up * 1.8f;
+                //transposer.m_FollowOffset = -Vector3.up * 1.8f;
                 crouchCollider.enabled = true;
                 standCollider.enabled = false;
                 rb.useGravity = true;
@@ -648,6 +665,9 @@ public class PlayerBehaviour : MonoBehaviour
         {
             saveData = new SaveData();
             saveData.respawnPoint = "NEWGAME";
+            saveData.maxHealth = 100f;
+            saveData.baseDamage = 1f;
+            saveData.collectedObjects = new List<string>();
         }
 
         SaveInteraction respawn = GameObject.Find(saveData.respawnPoint).GetComponent<SaveInteraction>();

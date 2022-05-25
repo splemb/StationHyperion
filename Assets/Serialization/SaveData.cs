@@ -26,4 +26,9 @@ public class SaveData
     public bool WallJump;
 
     public string respawnPoint;
+
+    public List<string> collectedObjects;
+
+    public float maxHealth;
+    public float baseDamage;
 }
