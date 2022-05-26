@@ -12,9 +12,12 @@ public class UpgradeObject : ShootInteraction
     [SerializeField] ParticleSystem particleSystem;
     bool stopChecking;
 
-    private void Awake()
+    private void OnEnable()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
+        stopChecking = false;
+        meshRenderer.enabled = true;
+        GetComponent<SphereCollider>().enabled = true;
     }
 
     private void FixedUpdate()
@@ -53,7 +56,7 @@ public class UpgradeObject : ShootInteraction
         meshRenderer.enabled = false;
         GetComponent<SphereCollider>().enabled = false;
 
-        StartCoroutine(DisableBehaviour());
+        //StartCoroutine(DisableBehaviour());
     }
 
     IEnumerator DisableBehaviour()
