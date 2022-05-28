@@ -69,7 +69,7 @@ public class ItemCubeInteraction : ShootInteraction
 
     IEnumerator DisableBehaviour()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(4f);
         gameObject.SetActive(false);
     }
 }

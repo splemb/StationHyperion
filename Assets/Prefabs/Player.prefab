@@ -104,6 +104,8 @@ MonoBehaviour:
   shotOrigin: {fileID: 0}
   shotSfx: {fileID: 6970803922904624174}
   windAmbient: {fileID: 6970803922997371387}
+  playerHead: {fileID: 0}
+  viewModelAnimator: {fileID: 0}
   saveData:
     GrapplingHook: 0
     Slide: 0
@@ -111,6 +113,9 @@ MonoBehaviour:
     Stomp: 0
     WallJump: 0
     respawnPoint: 
+    collectedObjects: []
+    maxHealth: 0
+    baseDamage: 0
   state: 0
   atkPower: 1
   gravityScale: 3
@@ -127,7 +132,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1344
   forceNewSave: 0
-  maxHealth: 100
   health: 0
   invincibilityTimer: 0
   minAngle: -89
@@ -145,10 +149,10 @@ MonoBehaviour:
   stepSize: 2
   miscAudio: {fileID: 6970803924036280034}
   sounds:
-  - {fileID: 8300000, guid: 4d34c203df7baa84ebb09d02b7999017, type: 3}
-  - {fileID: 8300000, guid: fcf35631cb823af4690660b0ed792eaf, type: 3}
-  - {fileID: 8300000, guid: 104875f6433b6504aa3610fcdb2f519d, type: 3}
-  - {fileID: 8300000, guid: b429a593ddb32c04ba06946033dbc7e1, type: 3}
+  - {fileID: 8300000, guid: 14d7641af0ad4cf40add698d00e44d1c, type: 3}
+  - {fileID: 8300000, guid: 82e57bff7e0981245b737e49d86b2798, type: 3}
+  - {fileID: 8300000, guid: 55a4412d69684c2469914464d5ef3b19, type: 3}
+  - {fileID: 8300000, guid: 55ce6765fe186b34bb290c9a9c955466, type: 3}
   slideAudio: {fileID: 6970803924116878341}
 --- !u!82 &6970803922904624174
 AudioSource:
@@ -384,7 +388,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d906416506b815948be00514184fd288, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ab1eec5376954c84da40e20e3bb066f6, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -671,7 +675,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: b890b17b19a917f4fa07fec10ed7badc, type: 3}
+  m_audioClip: {fileID: 8300000, guid: cecb8ab33aed8b44d9b886a5981efd17, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

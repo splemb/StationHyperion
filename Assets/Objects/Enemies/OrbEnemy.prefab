@@ -5562,7 +5562,7 @@ MonoBehaviour:
   shotDelay: 1
   shotMask:
     serializedVersion: 2
-    m_Bits: 448
+    m_Bits: 16832
 --- !u!114 &5178951132904911744
 MonoBehaviour:
   m_ObjectHideFlags: 0
